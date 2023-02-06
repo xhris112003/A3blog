@@ -20,3 +20,13 @@ Route::get('/articles/create', [ArticleController::class, 'create'])->name('arti
 Route::post('/', [ArticleController::class, 'store']);
 Route::resource('posts', 'PostController');
 Route::resource('comments', 'CommentController');
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
