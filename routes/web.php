@@ -15,8 +15,7 @@ use App\Http\Controllers\ArticleController;
 |
 */
 
-Route::get('/', [ArticleController::class, 'index']);
-Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
+Route::get('/', [ArticleController::class, 'index'])->name('home');
 Route::post('/', [ArticleController::class, 'store']);
 Route::resource('posts', 'PostController');
 Route::resource('comments', 'CommentController');
@@ -26,7 +25,8 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
+Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('article.destroy');
+
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
