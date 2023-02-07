@@ -66,11 +66,11 @@
             <img src="{{ asset(Storage::url($article->image)) }}" alt="">
           </li>
           @if (Auth::check() && Auth::user()->id === $article->user_id)
-            <form action="{{ route('article.destroy', $article) }}" method="post">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn-link" style="font-size: 10px;">Borrar</button>
-            </form>
+          <a style="color:black;" href="#" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $article->id }}').submit();">Borrar</a>
+          <form id="delete-form-{{ $article->id }}" action="{{ route('article.destroy', $article) }}" method="POST" style="display: none;">
+            @csrf
+            @method('delete')
+          </form>
           @endif
         @endforeach
       </ul>
