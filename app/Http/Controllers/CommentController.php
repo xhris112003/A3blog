@@ -6,14 +6,15 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, $post_id)
+    public function store(Request $request, $article_id)
     {
-        $comment = new Comment();
-        $comment->body = $request->input('body');
-        $comment->post_id = $post_id;
+        $comment = new Comment;
+        $comment->body = $request->body;
+        $comment->user_id = Auth::user()->id;
+        $comment->article_id = $article_id;
         $comment->save();
 
-        return redirect()->route('posts.show', $post_id);
+        return redirect()->back();
     }
 
 }

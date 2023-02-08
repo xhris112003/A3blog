@@ -64,6 +64,7 @@
             <h3>{{ $article->title }}</h3>
             <p>{{ $article->body }}</p>
             <img src="{{ asset(Storage::url($article->image)) }}" alt="">
+            <p>Autor: {{ $article->user->name }}</p>
           </li>
           @if (Auth::check() && Auth::user()->id === $article->user_id)
           <a style="color:black;" href="#" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $article->id }}').submit();">Borrar</a>
