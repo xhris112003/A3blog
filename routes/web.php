@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ArticleController;
 
 
@@ -17,12 +18,14 @@ use App\Http\Controllers\ArticleController;
 
 Route::get('/', [ArticleController::class, 'index'])->name('home');
 Route::post('/', [ArticleController::class, 'store']);
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+
 Route::resource('posts', 'PostController');
-Route::resource('comments', 'CommentController');
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('articles/{article}/comments', 'CommentController@store');
+Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
 
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');

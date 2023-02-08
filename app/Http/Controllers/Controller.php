@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Article;
+use App\Models\Comment;
+
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;

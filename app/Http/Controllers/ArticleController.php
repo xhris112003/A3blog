@@ -31,6 +31,12 @@ class ArticleController extends Controller
     {
         return view('articles.create');
     }
+    public function show($id)
+    {
+        $article = Article::find($id);
+        $comments = $articles->comments;
+        return view('articles.show', compact('articles', 'comments'));
+    }
 
     public function store(Request $request)
     {
