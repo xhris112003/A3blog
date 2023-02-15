@@ -11,6 +11,11 @@ class Article extends Model
     'title', 'body', 'image','user_id'
     ];
 
+    public function comments()
+    {
+        return $this->hasMany('App\Models\Comment');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
