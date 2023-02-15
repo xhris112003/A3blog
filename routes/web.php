@@ -22,11 +22,14 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
 Route::resource('posts', 'PostController');
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('articles/{article}/comments', 'CommentController@store');
-Route::get('/profile', 'App\Http\Controllers\ProfileController@showProfile');
+Route::get('/profile', 'App\Http\Controllers\ProfileController@showProfile')->name('profile');
 Route::get('login', 'App\Http\Controllers\AuthController@showLogin');
+Route::post('/profile/update', 'App\Http\Controllers\ProfileController@store')->name('profile.update');
+Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
 
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
