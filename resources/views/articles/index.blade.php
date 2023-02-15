@@ -13,7 +13,7 @@
       <ul>
         <li><a href="/">Inicio</a></li>
         @if (Auth::check())
-          <li><a href="{{ url('/perfil') }}">Perfil</a></li>
+          <li><a href="{{ url('/profile') }}">Perfil</a></li>
           <li>
             <a onclick="event.preventDefault();
                                   document.getElementById('logout-form').submit();">
