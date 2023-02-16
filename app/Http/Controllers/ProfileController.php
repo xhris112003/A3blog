@@ -20,7 +20,7 @@ class ProfileController extends Controller
         if (Auth::check()){
             return view('perfil', ['user' => $user]);
         }else{
-            abort(403, 'Registrate para acceder a esta pagina!');
+            abort(403, 'Inicia sesion o registrate para acceder a este sitio!');
         }
     }
 

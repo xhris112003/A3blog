@@ -13,12 +13,12 @@
 </head>
 <body>
   <header>
+  <div style="clear:both"></div>
     <nav>
-      <ul>
-        <li><a href="/">Inicio</a></li>
+      <ul >
+        <li style="margin-right: 0;"><a href="/">Inicio</a></li>
         @if (Auth::check())
-          <li><a href="{{ url('/profile') }}">Perfil</a></li>
-          <li>
+          <li style="margin-right: 0;">
             <a onclick="event.preventDefault();
                                   document.getElementById('logout-form').submit();">
                     {{ __('Logout') }}
@@ -27,9 +27,26 @@
                     @csrf
             </form>
           </li>
+          <li style="margin-left: auto;">
+            <div class="dropdown">
+              <a id="botonProfile" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              @if($user->image == null)
+              <img id="imgProfile" src="https://i.postimg.cc/pm9zNSS2/icono-del-usuario-s-mbolo-plano-de-avatar-aislado-en-blanco-el-fondo-simple-extracto-negro-vector-ej.jpg" alt="Profile picture" class="profile-pic">
+              @else
+              <img id="imgProfile" src="{{ asset(Storage::url($user->image)) }}" alt="Profile picture" class="profile-pic">
+              @endif
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ url('/profile') }}">Profile</a>
+                @if(Auth::user()->rol_id == 1)
+                <a class="dropdown-item" href="">Administration</a>
+                @endif
+              
+            </div>
+          </li>
         @else
-          <li><a href="{{ url('/register') }}">Registrarse</a></li>
-          <li><a href="{{ url('/login') }}">Iniciar sesión</a></li>
+          <li style="margin-right: 0;"><a href="{{ url('/register') }}">Registrarse</a></li>
+          <li style="margin-right: 0;"><a href="{{ url('/login') }}">Iniciar sesión</a></li>
         @endif
         
         </li>

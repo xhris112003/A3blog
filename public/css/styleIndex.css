@@ -54,3 +54,24 @@ img {
     width: 400px;
     height: 200px;
 }
+#imgProfile{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 20px;
+}
+#botonProfile{
+    margin-right: 2em;
+}
+
+.ImgNull{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 20px;
+    background-color: gray;
+}

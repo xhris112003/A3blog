@@ -22,10 +22,11 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::all();
+        $user = Auth::user();
         
         $articles = Article::with('user')->get();
 
-        return view('articles.index', compact('articles'));
+        return view('articles.index', compact('articles', 'user'));
     }
 
     public function create()

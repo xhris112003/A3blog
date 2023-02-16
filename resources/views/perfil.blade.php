@@ -15,17 +15,17 @@
 		<h1>Perfil de usuario</h1>
 		<div class="row">
 			<div id="info" class="col-md-6">
+                @if($user->image == null)
+                <img src="https://i.postimg.cc/pm9zNSS2/icono-del-usuario-s-mbolo-plano-de-avatar-aislado-en-blanco-el-fondo-simple-extracto-negro-vector-ej.jpg" alt="Profile picture" class="profile-pic">
+                @else
 				<img src="{{ asset(Storage::url($user->image)) }}" alt="Profile picture" class="profile-pic">
+                @endif
 				<h2>{{ $user->name }}</h2>
 				<p>{{ $user->email }}</p>
 			</div>
             <div class="col-md-6">
                 <form id="update-profile-form" method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                     @csrf
-                    @if(Auth::user()->rol_id == 1)
-                    <button class="btn btn-outline-info" type="button">Administration</button>
-                    <br><br>
-                    @endif
                     <div class="form-group">
                         <label for="name">Nombre:</label>
                         <input type="text" name="name" id="name" value="{{ $user->name }}">
