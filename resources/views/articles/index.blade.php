@@ -39,7 +39,7 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="{{ url('/profile') }}">Profile</a>
                 @if(Auth::user()->rol_id == 1)
-                <a class="dropdown-item" href="">Administration</a>
+                <a class="dropdown-item" href="{{route('administration')}}">Administration</a>
                 @endif
               
             </div>
