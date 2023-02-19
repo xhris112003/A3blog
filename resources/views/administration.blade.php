@@ -32,7 +32,7 @@
             </a>
         </div>
         <div class="col-lg-2">
-            <a type="button" href="dashboard/bookList"class="btn btn-outline-success">
+            <a type="button" href="{{route('AdminArticles')}}"class="btn btn-outline-success">
               Article list
             </a>
         </div>

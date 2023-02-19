@@ -31,6 +31,8 @@ Route::get('login', 'App\Http\Controllers\AuthController@showLogin');
 Route::post('/profile/update', 'App\Http\Controllers\ProfileController@store')->name('profile.update');
 Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
 Route::get('/administration','App\Http\Controllers\AdministrationController@showUsers')->name('administration');
+Route::get('/administration/articles','App\Http\Controllers\AdminArticleController@showArticle')->name('AdminArticles');
+
 Route::post('/administration/addAdmin','App\Http\Controllers\AdministrationController@addAdmin')->name('addAdmin');
 
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
