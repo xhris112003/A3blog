@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ asset('css/styleIndex.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ asset('css/styleCreate.css') }}">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <title>Mi Blog</title>
-</head>
+@extends('layouts.head')
 <body>
   <header>
   <div style="clear:both"></div>
@@ -29,7 +17,7 @@
           </li>
           <li style="margin-left: auto;">
             <div class="dropdown">
-              <a id="botonProfile" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a id="botonProfile" class="dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               @if($user->image == null)
               <img id="imgProfile" src="https://i.postimg.cc/pm9zNSS2/icono-del-usuario-s-mbolo-plano-de-avatar-aislado-en-blanco-el-fondo-simple-extracto-negro-vector-ej.jpg" alt="Profile picture" class="profile-pic">
               @else
@@ -87,13 +75,14 @@
             <img src="{{ asset(Storage::url($article->image)) }}" alt="">
             <p>Autor: {{ $article->user->name }}</p>
           </li>
-          <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target="#comments_{{ $article->id }}" aria-expanded="false" aria-controls="comments_{{ $article->id }}">
+          <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#comments_{{ $article->id }}" aria-expanded="false" aria-controls="comments_{{ $article->id }}">
             Comentarios
           </button>
           <div class="collapse mt-3" id="comments_{{ $article->id }}">
             <div class="card card-body">
               @foreach($article->comments as $comment)
-                <p>{{ $comment->body }}</p>
+                <p style="font-size:20px;">{{ $comment->body }}</p>
+                <b><p style="font-size:10px;">{{ $comment->created_at }}</p></b>
               @endforeach
               <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
@@ -106,7 +95,7 @@
             </div>
           </div>
           @if (Auth::check() && Auth::user()->id === $article->user_id)
-          <a style="color:black;" href="#" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $article->id }}').submit();">Borrar</a>
+          <a id="borrar" style="color:black;" href="#" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $article->id }}').submit();">Borrar</a>
           <form id="delete-form-{{ $article->id }}" action="{{ route('article.destroy', $article) }}" method="POST" style="display: none;">
             @csrf
             @method('delete')
@@ -121,3 +110,21 @@
   </footer>
 </body>
 </html>
+<script>
+  document.getElementById('borrar').addEventListener('click', function(event) {
+      event.preventDefault();
+      Swal.fire({
+        title: '¿Estás seguro de que deseas borrar este artículo?',
+        text: "¡No podrás revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, borrarlo'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-form-{{ $article->id }}').submit();
+        }
+      })
+    });
+</script>
