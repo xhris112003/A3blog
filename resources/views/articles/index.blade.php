@@ -81,7 +81,7 @@
           <div class="collapse mt-3" id="comments_{{ $article->id }}">
             <div class="card card-body">
               @foreach($article->comments as $comment)
-                <p style="font-size:20px;">{{ $comment->body }}</p>
+                <p style="font-size:20px;">{{ $comment->body }} ()</p>
                 <b><p style="font-size:10px;">{{ $comment->created_at }}</p></b>
               @endforeach
               <form action="{{ route('comments.store') }}" method="POST">
@@ -95,7 +95,7 @@
             </div>
           </div>
           @if (Auth::check() && Auth::user()->id === $article->user_id)
-          <a id="borrar" style="color:black;" href="#" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $article->id }}').submit();">Borrar</a>
+          <a id="borrar" style="color:black;" href="#">Borrar</a>
           <form id="delete-form-{{ $article->id }}" action="{{ route('article.destroy', $article) }}" method="POST" style="display: none;">
             @csrf
             @method('delete')
