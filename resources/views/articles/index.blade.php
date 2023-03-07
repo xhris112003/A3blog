@@ -80,12 +80,25 @@
           </button>
           <div class="collapse mt-3" id="comments_{{ $article->id }}">
             <div class="card card-body">
-              @foreach($article->comments as $comment)
-                <p style="font-size:20px;">{{ $comment->body }} ()</p>
-                <b><p style="font-size:10px;">{{ $comment->created_at }}</p></b>
-              @endforeach
+            @foreach($comments as $comment)
+                @if ($comment->article_id == $article->id)
+                    @if ($comment->user && $comment->user->name == $article->user->name)
+                      <div style="display:flex;">
+                        <p style="font-size:20px;">{{ $comment->body }}</p><p style="margin-left: 1em;font-size:13px;">(Autor)</p>
+                      </div>
+                    @else
+                      <div style="display:flex;">
+                        <p style="font-size:20px;">{{ $comment->body }}</p><p style="margin-left: 1em;font-size:13px;">({{ $comment->user ? ($comment->user->name) : 'Anónimo' }})</p>
+                      </div>
+                    @endif
+                    <b><p style="font-size:10px;">{{ $comment->created_at }}</p></b>
+                @endif
+            @endforeach
               <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
+                @if (Auth::check())
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                @endif
                 <input type="hidden" name="article_id" value="{{ $article->id }}">
                 <div class="form-group">
                   <textarea class="form-control" name="body" rows="3"></textarea>
@@ -122,9 +135,11 @@
         cancelButtonColor: '#d33',
         confirmButtonText: 'Sí, borrarlo'
       }).then((result) => {
+        @if (isset($article))
         if (result.isConfirmed) {
           document.getElementById('delete-form-{{ $article->id }}').submit();
         }
+        @endif  
       })
     });
 </script>

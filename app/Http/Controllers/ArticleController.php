@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Profile;
@@ -12,22 +13,22 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
-
 {
     // public function __construct()
     // {
     //     $this->middleware('auth');
     // }
 
-    
+
     public function index()
     {
         $articles = Article::all();
         $user = Auth::user();
-        
-        $articles = Article::with('user')->get();
 
-        return view('articles.index', compact('articles', 'user'));
+        $articles = Article::with('user')->get();
+        $comments = Comment::with('user')->get();
+
+        return view('articles.index', compact('articles', 'user', 'comments'));
     }
 
     public function create()
@@ -37,10 +38,9 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::find($id);
-        $comments = $articles->comments;
-        return view('articles.show', compact('articles', 'comments'));
+        $comments = Comment::where('article_id', $id)->with('user')->get();
+        return view('articles.show', compact('article', 'comments'));
     }
-
     public function store(Request $request)
     {
         $userId = Auth::id();
@@ -55,7 +55,7 @@ class ArticleController extends Controller
         $article->body = $request->input('body');
         $article->image = $path;
         $article->save();
-    
+
         return redirect('/');
     }
 
