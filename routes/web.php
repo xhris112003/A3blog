@@ -20,6 +20,9 @@ Route::get('/', [ArticleController::class, 'index'])->name('home');
 Route::post('/', [ArticleController::class, 'store']);
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
+Route::put('/users/{id}', 'App\Http\Controllers\UserController@update')->name('users.update');
+Route::get('/user/edit/{id}', 'App\Http\Controllers\UserController@edit');
+
 Route::resource('posts', 'PostController');
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 
