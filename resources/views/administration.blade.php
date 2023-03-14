@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
   <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 </head>
 
@@ -49,6 +50,7 @@
           <th>Name</th>
           <th>Email</th>
           <th>Password</th>
+          <th>Type_role</th>
           <th>Created_at</th>
           <th width="280px">Action</th>
         </tr>
@@ -60,13 +62,18 @@
           <td>{{ $users->name }}</td>
           <td>{{ $users->email }}</td>
           <td>{{ $users->password }}</td>
+          <td>{{ $users->rol_id }}</td>
           <td>{{ $users->created_at }}</td>
           <td>
-            <a data-bs-toggle="modal" data-bs-target="#myModal" data-id="{{ $users->id }}"
+            <a data-bs-toggle="modal" data-bs-target="#myModal" data-rol="{{ $users->rol_id}}" data-id="{{ $users->id }}"
               data-name="{{ $users->name }}" data-email="{{ $users->email }}" class="btn btn-warning btnEdit">
               <i class="fa fa-pencil-square-o"></i>
             </a>
-            <a id="borrar" data-id="{{ $users->id }}" class="btn btn-danger btnDelete"><i class="fa fa-trash"></i></a>
+            <a id="borrar" data-id="{{ $users->id }}" class="btn btn-danger btnDelete" onclick="borrarArticulo('{{ $users->id }}')"><i class="fa fa-trash"></i></a>
+            <form id="delete-form-{{ $users->id }}" action="{{ route('users.destroy', $users) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+          </form>
           </td>
         </tr>
         @endforeach
@@ -123,12 +130,16 @@
         <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="edit-user-form" >
+      <form id="edit-user-form">
         @csrf
         <div class="modal-body">
-        <div class="form-group">
-            <label for="name">Id:</label>
-            <input type="text" class="form-control" id="idUser"name="idUser" readonly>
+          <div class="form-group">
+            <label for="idUser">Id:</label>
+            <input type="text" class="form-control" id="idUser" name="idUser" readonly>
+          </div>
+          <div class="form-group">
+            <label for="RolUser">RolId:</label>
+            <input type="text" class="form-control" id="RolUser" name="RolUser">
           </div>
           <div class="form-group">
             <label for="name">Name:</label>
@@ -140,7 +151,8 @@
           </div>
           <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password" required>
+            <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password"
+              required>
             @error('password')
             <div style='color:red;' class="text-red-500">{{ $message }}</div>
             @enderror
@@ -169,65 +181,58 @@
 
   });
 
-  $(document).on('click', '.btnDelete', function () {
-    var id = $(this).data('id');
-    if (confirm("Are you sure you want to delete this user?")) {
-      $.ajax({
-        url: '/user/delete',
-        method: 'POST',
-        data: {
-          id: id,
-          _token: '{{ csrf_token() }}'
-        },
-        success: function (data) {
-          $('#tableUser').DataTable().ajax.reload();
+  function borrarArticulo(id) {
+      Swal.fire({
+        title: '¿Estás seguro de que deseas borrar este artículo?',
+        text: "¡No podrás revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, borrarlo'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-form-' + id).submit();
         }
-      });
+      })
     }
-  });
+  
 
   $(document).on('click', '.btnEdit', function () {
     var name = $(this).data('name');
     var email = $(this).data('email');
     var userId = $(this).data('id');
+    var rolId = $(this).data('rol');
 
     $('#idUser').val(userId);
     $('#nameUser').val(name);
     $('#emailUser').val(email);
+    $('#RolUser').val(rolId);
 
   });
 
-  $(document).ready(function() {
-  $('#edit-user-form').on('submit', function(e) {
-    e.preventDefault(); // Evita el comportamiento por defecto del formulario
+  $(document).ready(function () {
+    $('#edit-user-form').on('submit', function (e) {
+      e.preventDefault();
 
-    // Obtener el valor del input id en el formulario dentro del modal
-    var userId = $('#idUser').val();
+      var userId = $('#idUser').val();
 
-    // Obtener los datos del formulario
-    var data = $(this).serialize();
+      var data = $(this).serialize();
 
-    $.ajax({
-        url: "/users/" + userId, 
+      $.ajax({
+        url: "/users/" + userId,
         method: "PUT",
         dataType: "json",
         data: data,
-        success: function(response) {
-            // Cierra el modal
-            $('#myModal').modal('hide');
+        success: function (response) {
+          $('#myModal').modal('hide');
 
-            // Muestra un mensaje de confirmación
-            alert(response.success);
 
-            // Recarga la página
-            location.reload();
         },
-        error: function(response) {
-            alert('Error al actualizar el usuario');
-        }
+      });
+      location.reload();
     });
   });
-});
 
 
 

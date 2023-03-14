@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function delete(Request $request)
-    {
-        $user = User::findOrFail($request->id);
-        $user->delete();
-        return response()->json(['success' => 'User deleted successfully']);
-    }
 
     public function edit($id)
     {
@@ -29,8 +23,25 @@ class UserController extends Controller
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+
+        if ($request->password !== $request->password_confirmation) {
+            $errors = new \Illuminate\Support\MessageBag;
+            $errors->add('password', 'Passwords do not match');
+            return redirect()->back()->withErrors($errors)->withInput();
+        }
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
         $user->save();
         return response()->json(['success' => 'User updated successfully']);
+    }
+
+    public function destroy(User $users)
+    {
+        $users->delete();
+
+        return redirect('/administration');
     }
 }

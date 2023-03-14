@@ -18,8 +18,6 @@ class ArticleController extends Controller
     // {
     //     $this->middleware('auth');
     // }
-
-
     public function index()
     {
         $articles = Article::all();
@@ -29,6 +27,16 @@ class ArticleController extends Controller
         $comments = Comment::with('user')->get();
 
         return view('articles.index', compact('articles', 'user', 'comments'));
+    }
+    public function myarticles()
+    {
+        $articles = Article::all();
+        $user = Auth::user();
+
+        $articles = Article::with('user')->get();
+        $comments = Comment::with('user')->get();
+
+        return view('articles.myarticles', compact('articles', 'user', 'comments'));
     }
 
     public function create()
@@ -67,6 +75,12 @@ class ArticleController extends Controller
 
         $article->delete();
 
+        return redirect('/');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
         return redirect('/');
     }
 
