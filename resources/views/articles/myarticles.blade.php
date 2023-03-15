@@ -43,11 +43,13 @@
     </ul>
   </nav>
 </header>
-<h2 class="title text-center">Mis Articulos</h2>
+<h2 class="title m-3">Mis Articulos</h2>
+
 <div class="card-body">
   <ul class="articles">
     @foreach ($articles as $article)
-      <li class="article card mb-3 m-3 mx-auto">
+    @if(Auth::user()->name === $article->user->name)
+      <li class="article card mb-3 m-3 col-lg-3">
         <img class="card-img-top article-image" src="{{ asset(Storage::url($article->image)) }}" alt="">
         <div class="card-body border border-dark">
           <h4 class="card-title article-title">{{ $article->title }}</h4>
@@ -64,7 +66,7 @@
               @method('DELETE')
             </form>
           @endif
-          <div class="collapse mt-3 show" id="comments_{{ $article->id }}">
+          <div class="collapse mt-3" id="comments_{{ $article->id }}">
             <div class="card card-body">
               @foreach($comments as $comment)
                 @if ($comment->article_id == $article->id)
@@ -86,6 +88,7 @@
           </div>
         </div>
       </li>
+      @endif
     @endforeach
   </ul>
 </div>

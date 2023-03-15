@@ -72,63 +72,66 @@
         @endif
       </div>
       <h2>Últimos Artículos</h2>
-      <div class="card-body">
-  <ul>
-    @foreach ($articles as $article)
-    <li>
-      <h3>{{ $article->title }}</h3>
-      <p>{{ $article->body }}</p>
-      <img src="{{ asset(Storage::url($article->image)) }}" alt="">
-      <p>Autor: {{ $article->user->name }}</p>
-      <a href="#" class="card-link btn btn-primary btn-sm" data-bs-toggle="collapse"
-        data-bs-target="#comments_{{ $article->id }}" aria-expanded="false"
-        aria-controls="comments_{{ $article->id }}">Mostrar Comentarios</a>
-      <div class="collapse mt-3" id="comments_{{ $article->id }}">
-        <div class="card card-body">
-          @foreach($comments as $comment)
-          @if ($comment->article_id == $article->id)
-          @if ($comment->user && $comment->user->name == $article->user->name)
-          <div style="display:flex;">
-            <p style="font-size:20px;">{{ $comment->body }}</p>
-            <p style="margin-left: 1em;font-size:13px;">(Autor)</p>
-          </div>
-          @else
-          <div style="display:flex;">
-            <p style="font-size:20px;">{{ $comment->body }}</p>
-            <p style="margin-left: 1em;font-size:13px;">({{ $comment->user ? ($comment->user->name) : 'Anónimo' }})
-            </p>
-          </div>
-          @endif
-          <b>
-            <p style="font-size:10px;">{{ $comment->created_at }}</p>
-          </b>
-          @endif
-          @endforeach
-          <form action="{{ route('comments.store') }}" method="POST">
-            @csrf
-            @if (Auth::check())
-            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-            @endif
-            <input type="hidden" name="article_id" value="{{ $article->id }}">
-            <div class="form-group">
-              <textarea class="form-control" name="body" rows="3"></textarea>
+      <div class="card-body ">
+        <ul class="list-unstyled">
+          @foreach ($articles as $article)
+          <li class="border border-secondary rounded p-3">
+            <div class="d-flex justify-content-center"><h3>{{ $article->title }}</h3></div>
+            <p>{{ $article->body }}</p>
+            <div class="d-flex justify-content-center"><img src="{{ asset(Storage::url($article->image)) }}" alt=""></div>
+            <p>Autor: {{ $article->user->name }}</p>
+            <button class="btn btn-secondary btn-sm collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#comments_{{ $article->id }}" aria-expanded="false"
+              aria-controls="comments_{{ $article->id }}">
+              Comentarios
+            </button>
+            <div class="collapse mt-3" id="comments_{{ $article->id }}">
+              <div class="card card-body">
+                @foreach($comments as $comment)
+                @if ($comment->article_id == $article->id)
+                @if ($comment->user && $comment->user->name == $article->user->name)
+                <div style="display:flex;">
+                  <p style="font-size:20px;">{{ $comment->body }}</p>
+                  <p style="margin-left: 1em;font-size:13px;">(Autor)</p>
+                </div>
+                @else
+                <div style="display:flex;">
+                  <p style="font-size:20px;">{{ $comment->body }}</p>
+                  <p style="margin-left: 1em;font-size:13px;">({{ $comment->user ? ($comment->user->name) : 'Anónimo'
+                    }})
+                  </p>
+                </div>
+                @endif
+                <b>
+                  <p style="font-size:10px;">{{ $comment->created_at }}</p>
+                </b>
+                @endif
+                @endforeach
+                <form action="{{ route('comments.store') }}" method="POST">
+                  @csrf
+                  @if (Auth::check())
+                  <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                  @endif
+                  <input type="hidden" name="article_id" value="{{ $article->id }}">
+                  <div class="form-group">
+                    <textarea class="form-control" name="body" rows="3"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Añadir comentario</button>
+                </form>
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary">Añadir comentario</button>
-          </form>
-        </div>
+            @if (Auth::check() && Auth::user()->id === $article->user_id)
+            <a class="btn btn-danger btn-sm" id="borrar" onclick="borrarArticulo('{{ $article->id }}')">Borrar</a>
+            <form id="delete-form-{{ $article->id }}" action="{{ route('article.destroy', $article->id) }}"
+              method="POST" style="display: none;">
+              @csrf
+              @method('DELETE')
+            </form>
+            @endif
+          </li>
+          @endforeach
+        </ul>
       </div>
-      @if (Auth::check() && Auth::user()->id === $article->user_id)
-      <a class="btn btn-danger btn-sm" id="borrar" onclick="borrarArticulo('{{ $article->id }}')">Borrar</a>
-      <form id="delete-form-{{ $article->id }}" action="{{ route('article.destroy', $article->id) }}" method="POST"
-        style="display: none;">
-        @csrf
-        @method('DELETE')
-      </form>
-      @endif
-    </li>
-    @endforeach
-  </ul>
-</div>
     </section>
   </main>
   <footer>
