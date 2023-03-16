@@ -21,9 +21,13 @@ Route::get('/', [ArticleController::class, 'index'])->name('home');
 Route::get('/myarticles', [ArticleController::class, 'myarticles'])->name('myarticles');
 Route::post('/', [ArticleController::class, 'store']);
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::post('/articles/{article}/tags', 'App\Http\Controllers\TagController@addTag')->name('article.addTag');
+
+Route::get('/search', 'App\Http\Controllers\TagController@searchByTag')->name('article.searchByTag');
 
 Route::put('/users/{id}', 'App\Http\Controllers\UserController@update')->name('users.update');
-Route::get('/user/edit/{id}', 'App\Http\Controllers\UserController@edit');
+Route::put('/article/{id}', 'App\Http\Controllers\ArticleController@update')->name('article.update');
+
 Route::post('/logout', [ArticleController::class, 'logout'])->name('article.logout');
 
 Route::resource('posts', 'PostController');

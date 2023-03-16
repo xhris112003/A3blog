@@ -181,6 +181,13 @@
 
   });
 
+  if (window.jQuery) {  
+   console.log("jQuery está disponible en la página.");
+} else {
+   console.log("jQuery no está disponible en la página.");
+}
+
+
   function borrarArticulo(id) {
       Swal.fire({
         title: '¿Estás seguro de que deseas borrar este artículo?',

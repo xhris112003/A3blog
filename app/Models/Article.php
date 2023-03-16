@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     protected $fillable = [
-    'title', 'body', 'image','user_id'
+        'title',
+        'body',
+        'image',
+        'user_id'
     ];
 
     public function comments()
@@ -20,4 +23,15 @@ class Article extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function addTags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'article_tag', 'article_id', 'tag_id');
+    }
+
+
 }

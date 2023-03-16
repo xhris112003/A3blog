@@ -54,7 +54,12 @@
           <td>
             <a data-bs-toggle="modal" data-bs-target="#myModal" data-id="{{ $articles->id }}" data-title="{{ $articles->title }}" data-body="{{ $articles->body }}"
             class="btn btn-warning btnEdit"><i class="fa fa-pencil-square-o"></i></a>
-            <a id="borrar" data-id="" class="btn btn-danger btnDelete"><i class="fa fa-trash"></i></a>
+            <a id="borrar" onclick="borrarArticulo('{{ $articles->id }}')" class="btn btn-danger btnDelete"><i class="fa fa-trash"></i></a>
+            <form id="delete-form-{{ $articles->id }}" action="{{ route('article.destroy', $articles->id) }}"
+              method="POST" style="display: none;">
+              @csrf
+              @method('DELETE')
+            </form>
           </td>
         </tr>
         @endforeach
@@ -64,41 +69,50 @@
 
 </div>
 </body>
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="TagModal" tabindex="-1" aria-labelledby="TagModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Article</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-body">
+        <form id="add-tag-form" action="{{ route('article.addTag') }}" method="POST">
+          @csrf
+          <input type="hidden" name="article_id" value="{{ $article->id }}">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="tags">Etiquetas:</label>
+              <input type="text" class="form-control" name="tags" id="tags" placeholder="Ingrese las etiquetas separadas por comas">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <form id="addUser" name="addUser" action="{{route('addAdmin')}}" method="post">
-        @csrf
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="idArticle">Id:</label>
-            <input type="text" class="form-control" id="idArticle" name="idArticle" readonly>
-          </div>
-          <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" class="form-control" id="title" placeholder="Enter Title" name="title">
-          </div>
-          <div class="form-group">
-            <label for="body">Body:</label>
-            <textarea class="form-control" id="body" placeholder="Enter Body" name="body"></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
     </div>
   </div>
 </div>
+
 <script>
   $(document).ready(function () {
       $('#tableUser').DataTable();
 
   });
+
+  function borrarArticulo(id) {
+    Swal.fire({
+      title: '¿Estás seguro de que deseas borrar este artículo?',
+      text: "¡No podrás revertir esto!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, borrarlo'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('delete-form-' + id).submit();
+      }
+    })
+  }
 
   $(document).on('click', '.btnEdit', function () {
     var title = $(this).data('title');
@@ -109,5 +123,27 @@
     $('#title').val(title);
     $('#body').val(body);
 
+  });
+  $(document).ready(function () {
+    $('#edit-article-form').on('submit', function (e) {
+      e.preventDefault();
+
+      var articleId = $('#idArticle').val();
+
+      var data = $(this).serialize();
+
+      $.ajax({
+        url: "/article/" + articleId,
+        method: "PUT",
+        dataType: "json",
+        data: data,
+        success: function (response) {
+          $('#myModal').modal('hide');
+
+
+        },
+      });
+      location.reload();
+    });
   });
 </script>

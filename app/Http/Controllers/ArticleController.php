@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\Tag;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -23,7 +24,8 @@ class ArticleController extends Controller
         $articles = Article::all();
         $user = Auth::user();
 
-        $articles = Article::with('user')->get();
+
+        $articles = Article::with(['user', 'tags'])->get();
         $comments = Comment::with('user')->get();
 
         return view('articles.index', compact('articles', 'user', 'comments'));
@@ -69,19 +71,29 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-        if (Auth::id() !== $article->user_id) {
-            return redirect()->back()->with('error', 'No tienes permiso para borrar este artículo.');
+        $user = Auth::user();
+        if ($user->rol_id == 1 || Auth::id() === $article->user_id) {
+            $article->delete();
+            return redirect('/');
         }
 
-        $article->delete();
-
-        return redirect('/');
+        return redirect()->back()->with('error', 'No tienes permiso para borrar este artículo.');
     }
 
     public function logout()
     {
         Auth::logout();
         return redirect('/');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $article = Article::find($id);
+        $article->title = $request->title;
+        $article->body = $request->body;
+
+        $article->save();
+        return response()->json(['success' => 'Article updated successfully']);
     }
 
 
