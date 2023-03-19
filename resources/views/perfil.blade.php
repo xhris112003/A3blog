@@ -1,5 +1,4 @@
-@extends('perfil')
-</head>
+@extends('layouts.perfil')
 <header>
   <div style="clear:both"></div>
   <nav>
