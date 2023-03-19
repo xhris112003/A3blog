@@ -60,6 +60,11 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $userId = Auth::id();
+        
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,webp|max:2048'
+        ]);
+    
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');

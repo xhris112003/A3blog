@@ -1,14 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Mi Blog - Perfil</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ asset('css/styleProfile.css') }}">
-    <style type="text/css">
-
-	</style>
+@extends('perfil')
 </head>
+<header>
+  <div style="clear:both"></div>
+  <nav>
+    <ul>
+      <li style="margin-right: 0;"><a href="/">Inicio</a></li>
+      @if (Auth::check())
+      <li style="margin-right: 0;"><a href="{{ route('myarticles') }}">Mis Articulos</a></li>
+      <li style="margin-left: auto;">
+        <div class="dropdown">
+          <a id="botonProfile" class="dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            @if($user->image == null)
+            <img id="imgProfile"
+              src="https://i.postimg.cc/pm9zNSS2/icono-del-usuario-s-mbolo-plano-de-avatar-aislado-en-blanco-el-fondo-simple-extracto-negro-vector-ej.jpg"
+              alt="Profile picture" class="profile-pic">
+            @else
+            <img id="imgProfile" src="{{ asset(Storage::url($user->image)) }}" alt="Profile picture"
+              class="profile-pic">
+            @endif
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{{ route('profile') }}">Profile</a>
+            @if(Auth::user()->rol_id == 1)
+            <a class="dropdown-item" href="{{route('administration')}}">Administration</a>
+            @endif
+            <a class="dropdown-item" onclick="event.preventDefault();
+                                  document.getElementById('logout-form').submit();">
+              {{ __('Logout') }}
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+              @csrf
+            </form>
+          </div>
+        </div>
+      </li>
+      @else
+      <li style="margin-right: 0;"><a href="{{ url('/register') }}">Registrarse</a></li>
+      <li style="margin-right: 0;"><a href="{{ url('/login') }}">Iniciar sesión</a></li>
+      @endif
+
+      </li>
+    </ul>
+  </nav>
+</header>
 <body>
 	<div class="container">
 		<h1>Perfil de usuario</h1>
