@@ -23,6 +23,7 @@ class UserController extends Controller
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->rol_id = $request->rol_id;   
 
         if ($request->password !== $request->password_confirmation) {
             $errors = new \Illuminate\Support\MessageBag;

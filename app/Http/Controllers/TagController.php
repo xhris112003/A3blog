@@ -22,11 +22,13 @@ class TagController extends Controller
     public function searchByTag(Request $request)
     {
         $query = $request->input('query');
-        $articles = Article::whereHas('tags', function ($q) use ($query) {
-            $q->where('name', 'like', "%$query%");
+        $articles = Article::whereHas('tags', function ($query) use ($request) {
+            $query->where('name', 'LIKE', '%' . $request->input('query') . '%');
         })->with('tags')->get();
+
         return response()->json($articles);
     }
+
 
 
 

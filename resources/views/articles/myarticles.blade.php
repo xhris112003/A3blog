@@ -52,7 +52,9 @@
       <li class="article card mb-3 m-3 col-lg-3">
         <img class="card-img-top article-image" src="{{ asset(Storage::url($article->image)) }}" alt="">
         <div class="card-body border border-dark">
-          <h4 class="card-title article-title">{{ $article->title }}</h4>
+        <div class="d-flex align-items-center justify-content-between">
+            <h4>{{ $article->title }} <h6 class="fw-light">Posted {{$article->created_at->diffForHumans()}}</h6></h4>
+          </div>
           <p class="card-text article-body">{{ $article->body }}</p>
           <button class="btn btn-secondary btn-sm collapsed" type="button" data-bs-toggle="collapse"
             data-bs-target="#comments_{{ $article->id }}" aria-expanded="false" aria-controls="comments_{{ $article->id }}">

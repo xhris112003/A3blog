@@ -47,10 +47,16 @@ class ArticleController extends Controller
     }
     public function show($id)
     {
-        $article = Article::find($id);
-        $comments = Comment::where('article_id', $id)->with('user')->get();
-        return view('articles.show', compact('article', 'comments'));
+        $user = Auth::user();
+        $articles = Article::findOrFail($id);
+        $articles = Article::with('user')->get();
+        $comments = Comment::with('user')->get();
+
+
+
+        return view('articles.index', compact('articles', 'user', 'comments'));
     }
+
     public function store(Request $request)
     {
         $userId = Auth::id();

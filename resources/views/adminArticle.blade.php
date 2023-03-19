@@ -1,23 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>Users list!</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-  <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-  <script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-</head>
+@extends('layouts.adminArticle')
 <body>
 <div class="container"><br/><br/>
     <div class="row">
@@ -69,29 +50,38 @@
 
 </div>
 </body>
-<div class="modal fade" id="TagModal" tabindex="-1" aria-labelledby="TagModal" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-body">
-        <form id="add-tag-form" action="{{ route('article.addTag') }}" method="POST">
-          @csrf
-          <input type="hidden" name="article_id" value="{{ $article->id }}">
-          <div class="modal-body">
-            <div class="form-group">
-              <label for="tags">Etiquetas:</label>
-              <input type="text" class="form-control" name="tags" id="tags" placeholder="Ingrese las etiquetas separadas por comas">
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-          </div>
-        </form>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Article</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <form id="edit-article-form" action="{{route('article.update', ['id' => $articles->id])}}">
+        @csrf
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="idArticle">Id:</label>
+            <input type="text" class="form-control" id="idArticle" name="idArticle" readonly>
+          </div>
+          <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter Title" name="title">
+          </div>
+          <div class="form-group">
+            <label for="body">Body:</label>
+            <textarea class="form-control" id="body" placeholder="Enter Body" name="body"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-
+@section('adminArticle')
+@parent
 <script>
   $(document).ready(function () {
       $('#tableUser').DataTable();
@@ -147,3 +137,4 @@
     });
   });
 </script>
+@endsection

@@ -22,6 +22,7 @@ Route::get('/myarticles', [ArticleController::class, 'myarticles'])->name('myart
 Route::post('/', [ArticleController::class, 'store']);
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 Route::post('/articles/{article}/tags', 'App\Http\Controllers\TagController@addTag')->name('article.addTag');
+Route::get('/articles/{id}', 'App\Http\Controllers\ArticleController@show')->name('article.show');
 
 Route::get('/search', 'App\Http\Controllers\TagController@searchByTag')->name('article.searchByTag');
 

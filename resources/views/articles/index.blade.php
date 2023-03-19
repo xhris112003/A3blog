@@ -75,10 +75,10 @@
     <h2>Últimos Artículos</h2>
     <ul class="list-unstyled">
       @foreach ($articles as $article)
-      <li class="p-3">
+      <li class="p-3" id="article-{{ $article->id }}">
         <div class="card">
-          <div class="d-flex justify-content-center card-header">
-            <h3>{{ $article->title }}</h3>
+          <div class="d-flex card-header align-items-center justify-content-between">
+            <h3>{{ $article->title }} <h6 class="fw-light">Posted {{$article->created_at->diffForHumans()}}</h6></h3>
           </div>
           <div class="mx-auto card-body">
             <p>{{ $article->body }}</p>
@@ -89,18 +89,19 @@
             <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
               @foreach ($article->tags as $tag)
               <div class="col card-body">
-                <div class="text-info border border-info rounded-pill text-center">#{{ $tag->name }}</div>
+                <div class=" border rounded-pill text-center tag">#{{ $tag->name }}</div>
               </div>
               @endforeach
             </div>
           </div>
         </div>
         </div>
-
-        <button data-bs-toggle="modal" data-bs-target="#TagModal" class="btn btn-primary btn-sm collapsed" type="button"
-          data-bs-toggle="collapse">
+        @if (Auth::check() && Auth::user()->id === $article->user_id)
+        <button data-bs-toggle="modal" data-id="{{ $article->id}}" data-bs-target="#TagModal"
+          class="btn btn-primary btn-sm collapsed btnTag" type="button" data-bs-toggle="collapse">
           + Tag
         </button>
+        @endif
         <button class="btn btn-secondary btn-sm collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#comments_{{ $article->id }}" aria-expanded="false"
           aria-controls="comments_{{ $article->id }}">
@@ -164,9 +165,10 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
+        @if (isset($article))
         <form action="{{ route('article.addTag',['article' => $article->id]) }}" method="POST">
           @csrf
-          <input type="hidden" name="article_id" value="{{ $article->id }}">
+          <input type="hidden" name="article_id" id="articleId">
           <div class="form-group">
             <label for="newTag">Nuevo tag:</label>
             <input type="text" class="form-control" name="newTag" id="newTag"
@@ -174,6 +176,7 @@
           </div>
           <button type="submit" class="btn btn-primary">Agregar tag</button>
         </form>
+        @endif
       </div>
     </div>
   </div>
@@ -199,32 +202,53 @@
       }
     })
   }
+
+  $(document).on('click', '.btnTag', function () {
+    var articleId = $(this).data('id');
+
+    $('#articleId').val(articleId);
+
+  });
+
   $('#search').on('keyup', function () {
     var query = $(this).val();
     if (query != '') {
-        $.get('{{ route('article.searchByTag') }}', { query: query }, function (data) {
-            var resultsHtml = '';
-            $.each(data, function (index, article) {
-              $.each(article.tags, function (index, tag) {
-                    resultsHtml += '<li>' + tag.name + '</li>';
-                });
-                resultsHtml += '</ul>';
-                resultsHtml += '</div>';
-            });
-            $('#searchResult').html(resultsHtml);
-        });
-    }else{
+      var resultsHtml = '';
+      resultsHtml += '<div class="col-lg-2">'
       $.get('{{ route('article.searchByTag') }}', { query: query }, function (data) {
-            var resultsHtml = '';
-            $.each(data, function (index, article) {
-                resultsHtml += '';
-            });
-            $('#searchResult').html(resultsHtml);
+
+        $.each(data, function (index, article) {
+          resultsHtml += '<button data-id="' + article.id + '" class="border-0 card-header article">' + article.title + '</button>';
+
+          $.each(article.tags, function (index, tag) {
+            resultsHtml += '<div class="border rounded-pill text-center tag m-3">#' + tag.name + '</div>';
+          });
+
         });
+        resultsHtml += '</div>'
+        $('#searchResult').html(resultsHtml);
+      });
+    } else {
+      $.get('{{ route('article.searchByTag') }}', { query: query }, function (data) {
+        var resultsHtml = '';
+        $.each(data, function (index, article) {
+          resultsHtml += '';
+        });
+        $('#searchResult').html(resultsHtml);
+      });
     }
-});
+  });
 
-
+  $('#searchResult').on('click', '.article', function () {
+    var IdArticles = $(this).data('id');
+    console.log(IdArticles)
+    $.get('{{ route('article.show', '') }}/' + IdArticles, function (data) {
+      var targetElement = $('#article-' + IdArticles);
+      $('html, body').animate({
+        scrollTop: targetElement.offset().top
+      }, 'slow');
+    });
+  });
 
 </script>
 @endsection
